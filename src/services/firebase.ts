@@ -16,6 +16,5 @@ export const firebase = initializeApp(firebaseConfig)
 const auth = new GoogleAuthProvider()
 auth.addScope('profile')
 auth.addScope('email')
-auth.addScope('https://www.googleapis.com/auth/contacts.readonly')
 
 export const firebaseAuthProvider = auth
