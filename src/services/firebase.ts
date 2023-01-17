@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import { GoogleAuthProvider } from 'firebase/auth'
+import { initializeFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBD1owgxCcGiZI9iPM_D6rVtOsc3oOV-3A',
@@ -18,3 +19,5 @@ auth.addScope('profile')
 auth.addScope('email')
 
 export const firebaseAuthProvider = auth
+
+export const firestore = initializeFirestore(firebase, {})

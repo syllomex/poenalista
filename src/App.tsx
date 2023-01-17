@@ -1,3 +1,4 @@
+import { Lists } from './pages/Lists'
 import { AuthProvider, useAuth } from './providers/auth'
 
 function Component() {
@@ -5,6 +6,8 @@ function Component() {
 
   return (
     <div>
+      <Lists></Lists>
+
       {loading ? (
         <h1>Carregando</h1>
       ) : (

@@ -6,14 +6,14 @@ import { createContext, useContext, useEffect, useState } from 'react'
 
 const auth = getAuth()
 
-const AuthContext = createContext(
-  {} as {
-    user?: User | null
-    setUser: SetState<User | null | undefined>
-    loading: boolean
-    setLoading: SetState<boolean>
-  }
-)
+interface IAuthContext {
+  user?: User | null
+  setUser: SetState<User | null | undefined>
+  loading: boolean
+  setLoading: SetState<boolean>
+}
+
+const AuthContext = createContext({} as IAuthContext)
 
 export const AuthProvider: ComponentWithChildren = ({ children }) => {
   const [user, setUser] = useStoredState<User>('auth-user')
@@ -36,7 +36,13 @@ export const AuthProvider: ComponentWithChildren = ({ children }) => {
   )
 }
 
-export const useAuth = () => {
+interface AuthHook extends Omit<IAuthContext, 'setUser'> {
+  login: () => Promise<void>
+}
+export function useAuth(secure: true): Omit<AuthHook, 'user'> & { user: User }
+export function useAuth(secure?: false): AuthHook
+
+export function useAuth(secure?: boolean): AuthHook {
   const { setUser, user, loading, setLoading } = useContext(AuthContext)
 
   const login = async () => {
