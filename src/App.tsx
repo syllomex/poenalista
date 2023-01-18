@@ -4,10 +4,10 @@ import { AuthProvider, useAuth } from './providers/auth'
 function Component() {
   const { user, login, loading } = useAuth()
 
+  if (user) return <Lists />
+
   return (
     <div>
-      <Lists></Lists>
-
       {loading ? (
         <h1>Carregando</h1>
       ) : (
