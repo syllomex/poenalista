@@ -1,34 +1,54 @@
-import { Lists } from './pages/Lists'
-import { AuthProvider, useAuth } from './providers/auth'
+import {
+  createBrowserRouter,
+  Outlet,
+  redirect,
+  RouterProvider,
+} from 'react-router-dom'
 
-function Component() {
-  const { user, login, loading } = useAuth()
+import { Landing } from '@/pages/Landing'
+import { Lists } from '@/pages/Lists'
+import { AuthProvider } from './providers/auth'
 
-  if (user) return <Lists />
+function isAuthorized() {
+  const user = JSON.parse(localStorage.getItem('auth-user') ?? 'null')
+  return !!user
+}
 
+function Root() {
   return (
-    <div>
-      {loading ? (
-        <h1>Carregando</h1>
-      ) : (
-        <>
-          {user ? (
-            <pre>{JSON.stringify(user, null, 2)}</pre>
-          ) : (
-            <button onClick={login}>Login</button>
-          )}
-        </>
-      )}
-    </div>
+    <AuthProvider>
+      <Outlet />
+    </AuthProvider>
   )
 }
 
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Root />,
+    children: [
+      {
+        path: '/',
+        element: <Landing />,
+        loader: () => {
+          if (isAuthorized()) throw redirect('/lists')
+          return null
+        },
+      },
+      {
+        path: '/lists',
+        element: <Lists />,
+        loader: () => {
+          if (!isAuthorized()) throw redirect('/')
+          return null
+        },
+      },
+    ],
+  },
+])
+
 function App() {
-  return (
-    <AuthProvider>
-      <Component />
-    </AuthProvider>
-  )
+  return <RouterProvider router={router} />
 }
 
 export default App

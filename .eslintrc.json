@@ -22,6 +22,8 @@
     "@typescript-eslint/no-misused-promises": "off",
     "@typescript-eslint/space-before-function-paren": "off",
     "@typescript-eslint/comma-dangle": "off",
+    "@typescript-eslint/no-throw-literal": "off",
+    "@typescript-eslint/indent": "off",
     "react/prop-types": "off",
     "react/react-in-jsx-scope": "off",
     "multiline-ternary": "off"

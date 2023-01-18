@@ -1,3 +1,4 @@
+import { Authorized } from '@/components/Authorized'
 import { Collection } from '@/components/Collection'
 import { ListItem } from '@/components/ListItem'
 import { useAuth } from '@/providers/auth'
@@ -6,8 +7,8 @@ import { List } from '@/types'
 import { addDoc, collection } from 'firebase/firestore'
 import { useCallback, useMemo } from 'react'
 
-export function Lists() {
-  const { user } = useAuth(true)
+function Component() {
+  const { user, logout } = useAuth(true)
 
   const path = useMemo(() => `/users/${user.uid}/lists`, [user.uid])
 
@@ -21,6 +22,7 @@ export function Lists() {
   return (
     <div>
       <button onClick={handleCreateList}>Nova lista</button>
+      <button onClick={logout}>Sair</button>
 
       <Collection<List> path={path}>
         {data => (
@@ -34,5 +36,13 @@ export function Lists() {
         )}
       </Collection>
     </div>
+  )
+}
+
+export function Lists() {
+  return (
+    <Authorized>
+      <Component />
+    </Authorized>
   )
 }
