@@ -1,11 +1,13 @@
 import { firestore } from '@/services'
 import {
   collection,
+  DocumentData,
   onSnapshot,
   query,
   QueryConstraint,
+  QueryDocumentSnapshot,
 } from 'firebase/firestore'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 export function Collection<T = unknown>({
   path,
@@ -14,7 +16,7 @@ export function Collection<T = unknown>({
 }: {
   path: string
   queryConstraints?: QueryConstraint[]
-  children?: (data: T[] | undefined | null) => JSX.Element
+  children?: (data: Array<T & { id: string }> | undefined | null) => JSX.Element
 }) {
   const listsRef = useMemo(() => collection(firestore, path), [path])
   const q = useMemo(
@@ -22,17 +24,41 @@ export function Collection<T = unknown>({
     [listsRef, queryConstraints]
   )
 
-  const [data, setData] = useState<T[] | null>()
+  const [data, setData] = useState<Array<T & { id: string }> | null>()
+
+  const format = useCallback((doc: QueryDocumentSnapshot<DocumentData>) => {
+    return { id: doc.id, ...doc.data() } as T & { id: string }
+  }, [])
+
+  const update = useCallback(
+    (doc: QueryDocumentSnapshot<DocumentData>) => {
+      const data = format(doc)
+      setData(cur => {
+        if (!cur) return cur
+        const index = cur.findIndex(item => item.id === data.id)
+        if (index === -1) return cur
+        const updated = [
+          ...[...cur].splice(0, index),
+          data,
+          ...[...cur].splice(index + 1),
+        ]
+        return updated
+      })
+    },
+    [format]
+  )
 
   useEffect(() => {
-    const unsub = onSnapshot(q, doc => {
-      // const source = doc.metadata.hasPendingWrites ? 'Local' : 'Server'
-      // console.log(source)
-      setData(doc.docs.map(doc => ({ id: doc.id, ...doc.data() } as T)))
+    const unsub = onSnapshot(q, snapshot => {
+      setData(snapshot.docs.map(doc => format(doc)))
+
+      snapshot.docChanges().forEach(change => {
+        if (change.type === 'modified') update(change.doc)
+      })
     })
 
     return unsub
-  }, [path, q])
+  }, [format, path, q, update])
 
   return children?.(data) ?? null
 }

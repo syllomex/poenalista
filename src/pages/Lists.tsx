@@ -4,8 +4,10 @@ import { ListItem } from '@/components/ListItem'
 import { useAuth } from '@/providers/auth'
 import { firestore } from '@/services'
 import { List } from '@/types'
+
 import { addDoc, collection, orderBy } from 'firebase/firestore'
 import { useCallback, useMemo } from 'react'
+import { Outlet } from 'react-router-dom'
 
 function Component() {
   const { user, logout } = useAuth(true)
@@ -18,7 +20,7 @@ function Component() {
 
     void addDoc(collection(firestore, path), {
       name: text,
-      createdAt: new Date(),
+      createdAt: Date.now(),
     })
   }, [path])
 
@@ -27,7 +29,10 @@ function Component() {
       <button onClick={handleCreateList}>Nova lista</button>
       <button onClick={logout}>Sair</button>
 
-      <Collection<List> path={path} queryConstraints={[orderBy('createdAt', 'desc')]}>
+      <Collection<List>
+        path={path}
+        queryConstraints={[orderBy('createdAt', 'desc')]}
+      >
         {data => (
           <div>
             {!data && <p>Carregando listas</p>}
@@ -38,6 +43,8 @@ function Component() {
           </div>
         )}
       </Collection>
+
+      <Outlet />
     </div>
   )
 }

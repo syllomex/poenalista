@@ -7,7 +7,8 @@ import {
 
 import { Landing } from '@/pages/Landing'
 import { Lists } from '@/pages/Lists'
-import { AuthProvider } from './providers/auth'
+import { Items } from '@/pages/Items'
+import { AuthProvider } from '@/providers/auth'
 
 function isAuthorized() {
   const user = JSON.parse(localStorage.getItem('auth-user') ?? 'null')
@@ -20,6 +21,11 @@ function Root() {
       <Outlet />
     </AuthProvider>
   )
+}
+
+function authLoader() {
+  if (!isAuthorized()) throw redirect('/')
+  return null
 }
 
 const router = createBrowserRouter([
@@ -38,10 +44,14 @@ const router = createBrowserRouter([
       {
         path: '/lists',
         element: <Lists />,
-        loader: () => {
-          if (!isAuthorized()) throw redirect('/')
-          return null
-        },
+        loader: authLoader,
+        children: [
+          {
+            path: '/lists/:listId',
+            element: <Items />,
+            loader: authLoader,
+          },
+        ],
       },
     ],
   },
