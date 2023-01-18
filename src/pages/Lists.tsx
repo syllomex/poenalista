@@ -25,6 +25,8 @@ export function Lists() {
       <Collection<List> path={path}>
         {data => (
           <div>
+            {!data && <p>Carregando listas</p>}
+
             {data?.map(list => (
               <ListItem key={list.id} data={list} />
             ))}
