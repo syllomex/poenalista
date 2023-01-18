@@ -4,7 +4,7 @@ import { ListItem } from '@/components/ListItem'
 import { useAuth } from '@/providers/auth'
 import { firestore } from '@/services'
 import { List } from '@/types'
-import { addDoc, collection } from 'firebase/firestore'
+import { addDoc, collection, orderBy } from 'firebase/firestore'
 import { useCallback, useMemo } from 'react'
 
 function Component() {
@@ -16,7 +16,10 @@ function Component() {
     const text = prompt('nome da lista')
     if (!text) return
 
-    void addDoc(collection(firestore, path), { name: text })
+    void addDoc(collection(firestore, path), {
+      name: text,
+      createdAt: new Date(),
+    })
   }, [path])
 
   return (
@@ -24,7 +27,7 @@ function Component() {
       <button onClick={handleCreateList}>Nova lista</button>
       <button onClick={logout}>Sair</button>
 
-      <Collection<List> path={path}>
+      <Collection<List> path={path} queryConstraints={[orderBy('createdAt', 'desc')]}>
         {data => (
           <div>
             {!data && <p>Carregando listas</p>}
