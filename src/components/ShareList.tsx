@@ -38,6 +38,7 @@ function Component() {
     <Document<Share>
       path={`${path}/${user.uid}`}
       defaultValue={{ id: user.uid, with: [] }}
+      createOnError
     >
       {data => <>{!!data && <List data={data} path={path} />}</>}
     </Document>
