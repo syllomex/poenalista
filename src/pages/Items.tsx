@@ -4,7 +4,14 @@ import { firestore } from '@/services'
 import { ListItem } from '@/types'
 import { useAsyncAction, useAsyncHandler } from '@/utils'
 
-import { addDoc, collection, doc, orderBy, updateDoc } from 'firebase/firestore'
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  orderBy,
+  updateDoc,
+} from 'firebase/firestore'
 import { useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -21,6 +28,12 @@ function Item({ data, listId }: { data: ListItem; listId: string }) {
       if (!newName) return
       await updateDoc(doc(firestore, path), { name: newName })
     }, [data.name, path])
+  )
+
+  const [handleDelete] = useAsyncHandler(
+    useCallback(async () => {
+      await deleteDoc(doc(firestore, path))
+    }, [path])
   )
 
   return (
@@ -40,6 +53,7 @@ function Item({ data, listId }: { data: ListItem; listId: string }) {
         </label>
       </div>
       <button onClick={handleUpdate}>Editar</button>
+      <button onClick={handleDelete}>Excluir</button>
     </div>
   )
 }
