@@ -37,10 +37,15 @@ export function ListItem({ data }: ListItemProps) {
           ) : (
             <button onClick={handleUpdate}>Editar</button>
           )}
-          {deleting ? (
-            'Excluindo'
-          ) : (
-            <button onClick={handleDelete}>Excluir</button>
+
+          {data.ownerId === user.uid && (
+            <>
+              {deleting ? (
+                'Excluindo'
+              ) : (
+                <button onClick={handleDelete}>Excluir</button>
+              )}
+            </>
           )}
         </div>
       </div>

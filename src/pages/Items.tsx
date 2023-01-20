@@ -1,6 +1,5 @@
 import { Authorized } from '@/components/Authorized'
 import { Collection } from '@/components/Collection'
-import { useAuth } from '@/providers/auth'
 import { firestore } from '@/services'
 import { ListItem } from '@/types'
 import { useAsyncAction } from '@/utils'
@@ -9,8 +8,7 @@ import { addDoc, collection, doc, orderBy, updateDoc } from 'firebase/firestore'
 import { useNavigate, useParams } from 'react-router-dom'
 
 function Item({ data, listId }: { data: ListItem; listId: string }) {
-  const { user } = useAuth(true)
-  const path = `users/${user.uid}/lists/${listId}/items/${data.id}`
+  const path = `/lists/${listId}/items/${data.id}`
 
   const [handleToggleChecked] = useAsyncAction(async () => {
     await updateDoc(doc(firestore, path), { checked: !data.checked })
@@ -31,11 +29,9 @@ function Item({ data, listId }: { data: ListItem; listId: string }) {
 }
 
 function Component() {
-  const { user } = useAuth(true)
-
   const navigate = useNavigate()
   const params = useParams<{ listId: string }>()
-  const path = `users/${user.uid}/lists/${params.listId as string}/items`
+  const path = `/lists/${params.listId as string}/items`
 
   const [handleAddItem, { loading: creating }] = useAsyncAction(async () => {
     const name = prompt('Digite o nome do item')

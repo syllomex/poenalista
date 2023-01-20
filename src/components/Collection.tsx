@@ -2,6 +2,7 @@ import { firestore } from '@/services'
 import {
   collection,
   DocumentData,
+  FirestoreError,
   onSnapshot,
   query,
   QueryConstraint,
@@ -13,18 +14,24 @@ export function Collection<T = unknown>({
   path,
   queryConstraints,
   children,
+  defaultValue,
 }: {
   path: string
   queryConstraints?: QueryConstraint[]
-  children?: (data: Array<T & { id: string }> | undefined | null) => JSX.Element
+  children?: (
+    data: Array<T & { id: string }> | undefined | null,
+    error?: FirestoreError
+  ) => JSX.Element
+  defaultValue?: Array<T & { id: string }>
 }) {
-  const listsRef = useMemo(() => collection(firestore, path), [path])
+  const ref = useMemo(() => collection(firestore, path), [path])
   const q = useMemo(
-    () => query(listsRef, ...(queryConstraints ?? [])),
-    [listsRef, queryConstraints]
+    () => query(ref, ...(queryConstraints ?? [])),
+    [ref, queryConstraints]
   )
 
   const [data, setData] = useState<Array<T & { id: string }> | null>()
+  const [error, setError] = useState<FirestoreError>()
 
   const format = useCallback((doc: QueryDocumentSnapshot<DocumentData>) => {
     return { id: doc.id, ...doc.data() } as T & { id: string }
@@ -49,16 +56,24 @@ export function Collection<T = unknown>({
   )
 
   useEffect(() => {
-    const unsub = onSnapshot(q, snapshot => {
-      setData(snapshot.docs.map(doc => format(doc)))
+    const unsub = onSnapshot(
+      q,
+      snapshot => {
+        setData(snapshot.docs.map(doc => format(doc)))
 
-      snapshot.docChanges().forEach(change => {
-        if (change.type === 'modified') update(change.doc)
-      })
-    })
+        snapshot.docChanges().forEach(change => {
+          if (change.type === 'modified') update(change.doc)
+        })
+      },
+      error => {
+        if (defaultValue) setData(defaultValue)
+        setError(error)
+        console.error(`${path} > ${error.message}`)
+      }
+    )
 
     return unsub
-  }, [format, path, q, update])
+  }, [defaultValue, format, path, q, update])
 
-  return children?.(data) ?? null
+  return children?.(data, error) ?? null
 }
