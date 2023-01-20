@@ -22,7 +22,7 @@ export function ListItem({ data }: ListItemProps) {
   }, [data.id, data.name, user.uid])
 
   const [handleDelete, { loading: deleting }] = useAsyncAction(async () => {
-    await deleteDoc(doc(firestore, `/users/${user.uid}/lists/${data.id}`))
+    await deleteDoc(doc(firestore, `/lists/${data.id}`))
   }, [user.uid, data.id])
 
   return (
