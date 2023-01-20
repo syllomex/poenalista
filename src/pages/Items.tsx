@@ -2,9 +2,10 @@ import { Authorized } from '@/components/Authorized'
 import { Collection } from '@/components/Collection'
 import { firestore } from '@/services'
 import { ListItem } from '@/types'
-import { useAsyncAction } from '@/utils'
+import { useAsyncAction, useAsyncHandler } from '@/utils'
 
 import { addDoc, collection, doc, orderBy, updateDoc } from 'firebase/firestore'
+import { useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 function Item({ data, listId }: { data: ListItem; listId: string }) {
@@ -13,6 +14,14 @@ function Item({ data, listId }: { data: ListItem; listId: string }) {
   const [handleToggleChecked] = useAsyncAction(async () => {
     await updateDoc(doc(firestore, path), { checked: !data.checked })
   }, [])
+
+  const [handleUpdate] = useAsyncHandler(
+    useCallback(async () => {
+      const newName = prompt('Digite o novo nome', data.name)
+      if (!newName) return
+      await updateDoc(doc(firestore, path), { name: newName })
+    }, [data.name, path])
+  )
 
   return (
     <div>
@@ -30,6 +39,7 @@ function Item({ data, listId }: { data: ListItem; listId: string }) {
           {data.name}
         </label>
       </div>
+      <button onClick={handleUpdate}>Editar</button>
     </div>
   )
 }
