@@ -34,6 +34,17 @@ function List({ data, path }: { data: Share; path: string }) {
   const [handleShare] = useAsyncAction(async () => {
     const email = prompt('Digite o e-mail')
     if (!email) return
+    if (email === user.email) {
+      alert('Você não pode compartilhar sua lista com você mesmo!')
+      return
+    }
+
+    if (data.with.includes(email)) {
+      alert(
+        'Você já está compartilhando suas listas com esse endereço de e-mail!'
+      )
+      return
+    }
     await setDoc(doc(collection(firestore, path), user.uid), {
       with: [...data.with, email],
       createdAt: Date.now(),
