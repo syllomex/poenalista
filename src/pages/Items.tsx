@@ -16,13 +16,19 @@ function Item({ data, listId }: { data: ListItem; listId: string }) {
 
   return (
     <div>
-      <div>
+      <div style={{ display: 'flex' }}>
         <input
+          id={`item-${data.id}`}
           type="checkbox"
           checked={data.checked}
           onChange={handleToggleChecked}
         />
-        <span>{data.name}</span>
+        <label
+          htmlFor={`item-${data.id}`}
+          style={{ display: 'block', flex: 1 }}
+        >
+          {data.name}
+        </label>
       </div>
     </div>
   )
