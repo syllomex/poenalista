@@ -16,7 +16,7 @@ export function ListItem({ data }: ListItemProps) {
   const [handleUpdate, { loading: updating }] = useAsyncAction(async () => {
     const newName = prompt('Digite o novo nome', data.name)
     if (!newName?.length) return
-    await updateDoc(doc(firestore, `/users/${user.uid}/lists/${data.id}`), {
+    await updateDoc(doc(firestore, `/lists/${data.id}`), {
       name: newName,
     })
   }, [data.id, data.name, user.uid])
