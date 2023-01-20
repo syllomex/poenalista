@@ -2,10 +2,31 @@ import { Authorized } from '@/components/Authorized'
 import { useAuth } from '@/providers/auth'
 import { firestore } from '@/services'
 import { Share } from '@/types'
-import { useAsyncAction } from '@/utils'
-import { collection, doc, setDoc } from 'firebase/firestore'
-import { useMemo } from 'react'
+import { useAsyncAction, useAsyncHandler } from '@/utils'
+import { collection, doc, setDoc, updateDoc } from 'firebase/firestore'
+import { useCallback, useMemo } from 'react'
 import { Document } from './Document'
+
+function SharingWithEmail({
+  email,
+  onDelete,
+}: {
+  email: string
+  onDelete: (email: string) => Promise<void>
+}) {
+  return (
+    <div>
+      {email} -{' '}
+      <button
+        onClick={() => {
+          void onDelete(email)
+        }}
+      >
+        Excluir
+      </button>
+    </div>
+  )
+}
 
 function List({ data, path }: { data: Share; path: string }) {
   const { user } = useAuth(true)
@@ -19,11 +40,26 @@ function List({ data, path }: { data: Share; path: string }) {
     } as Omit<Share, 'id'>)
   }, [path])
 
+  const [handleDelete] = useAsyncHandler(
+    useCallback(
+      async (email: string) => {
+        const updated = [...data.with]
+        updated.splice(updated.indexOf(email), 1)
+        await updateDoc(doc(firestore, `${path}/${user.uid}`), {
+          with: updated,
+        })
+      },
+      [data.with, path, user.uid]
+    )
+  )
+
   return (
     <div>
       <div>Compartilhando com</div>
       <button onClick={handleShare}>Adicionar</button>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+      {data.with.map(email => (
+        <SharingWithEmail key={email} email={email} onDelete={handleDelete} />
+      ))}
     </div>
   )
 }
