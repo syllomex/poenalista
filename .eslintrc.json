@@ -27,6 +27,7 @@
     "@typescript-eslint/indent": "off",
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
-    "multiline-ternary": "off"
+    "multiline-ternary": "off",
+    "comma-dangle": "off"
   }
 }
