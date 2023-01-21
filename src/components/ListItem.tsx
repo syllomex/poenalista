@@ -36,7 +36,7 @@ export function ListItem({ data }: ListItemProps) {
     <div className="flex-row items-start">
       <Link
         to={`/lists/${data.id}`}
-        className="flex flex-row flex-1 py-2 items-start"
+        className="flex flex-row flex-1 py-2 items-start hover:opacity-80 transition-all"
       >
         <img src={itemMark} className="object-none md:h-6 md:w-6 pt-1" />
         <p className="pl-4 flex-1 md:text-xl">{data.name}</p>

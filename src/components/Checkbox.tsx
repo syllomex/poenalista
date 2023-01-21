@@ -28,9 +28,12 @@ export function Checkbox({
   }, [checked, onChange])
 
   return (
-    <div className="flex-row py-2" onClick={handleChange}>
+    <div
+      className="flex-row py-2 cursor-pointer hover:opacity-80 transition-all"
+      onClick={handleChange}
+    >
       <img src={checked ? checkboxChecked : checkbox} />
-      {!!label && <p className='pl-4 flex-1'>{label}</p>}
+      {!!label && <p className="pl-4 flex-1 md:text-xl">{label}</p>}
     </div>
   )
 }
