@@ -1,6 +1,6 @@
 {
   "name": "P\u00f5e na Lista",
-  "short_name": "PoeNaLista",
+  "short_name": "P\u00f5e na Lista",
   "description": "Crie suas listas para qualquer coisa e compartilhe com quem quiser!",
   "icons": [
     {
@@ -14,8 +14,8 @@
       "type": "image/png"
     }
   ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
+  "theme_color": "#242424",
+  "background_color": "#FFFFFF",
   "display": "standalone",
   "orientation": "portrait"
 }
