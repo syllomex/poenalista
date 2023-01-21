@@ -45,13 +45,11 @@ const router = createBrowserRouter([
         path: '/lists',
         element: <Lists />,
         loader: authLoader,
-        children: [
-          {
-            path: '/lists/:listId',
-            element: <Items />,
-            loader: authLoader,
-          },
-        ],
+      },
+      {
+        path: '/lists/:listId',
+        element: <Items />,
+        loader: authLoader,
       },
     ],
   },

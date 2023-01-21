@@ -1,7 +1,7 @@
 import { Authorized } from '@/components/Authorized'
 import { Collection } from '@/components/Collection'
 import { ListItem } from '@/components/ListItem'
-import { ShareList } from '@/components/ShareList'
+import { Loading } from '@/components/Loading'
 import { useAuth } from '@/providers/auth'
 import { firestore } from '@/services'
 import { List, Share } from '@/types'
@@ -9,10 +9,12 @@ import { useAsyncHandler } from '@/utils'
 
 import { addDoc, collection, orderBy, where } from 'firebase/firestore'
 import { useCallback, useMemo } from 'react'
-import { Outlet } from 'react-router-dom'
+
+import plus from '@/assets/icons/plus.svg'
+import { Header } from '@/components/Header'
 
 function Component() {
-  const { user, logout } = useAuth(true)
+  const { user } = useAuth(true)
 
   const path = useMemo(() => '/lists', [])
 
@@ -33,10 +35,9 @@ function Component() {
 
   return (
     <div>
-      <button onClick={handleCreateList}>Nova lista</button>
-      <button onClick={logout}>Sair</button>
+      <Header>Listas</Header>
 
-      <div style={{ display: 'flex' }}>
+      <div>
         <div style={{ flex: 1 }}>
           <Collection<Share>
             path={sharedPath}
@@ -47,11 +48,22 @@ function Component() {
           >
             {data => (
               <div>
-                {!data && <p>Carregando compartilhados comigo</p>}
+                {!data && (
+                  <div className="items-center py-4">
+                    <Loading size={20} />
+                  </div>
+                )}
+
                 {!!data && (
                   <div>
-                    Compartilhados comigo
-                    <pre>{JSON.stringify(data, null, 2)}</pre>
+                    <button
+                      onClick={handleCreateList}
+                      className="flex items-center py-4"
+                    >
+                      <img src={plus} />
+                      <span className="pl-4 md:text-xl">nova lista</span>
+                    </button>
+
                     <Collection<List>
                       path={path}
                       queryConstraints={[
@@ -64,7 +76,6 @@ function Component() {
                     >
                       {data => (
                         <div>
-                          Listas:
                           {data?.map(list => (
                             <ListItem key={list.id} data={list} />
                           ))}
@@ -77,13 +88,7 @@ function Component() {
             )}
           </Collection>
         </div>
-
-        <div style={{ flex: 1 }}>
-          <ShareList />
-        </div>
       </div>
-
-      <Outlet />
     </div>
   )
 }
