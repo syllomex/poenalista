@@ -1,8 +1,11 @@
 import { Authorized } from '@/components/Authorized'
+import { Button } from '@/components/Button'
 import { Collection } from '@/components/Collection'
+import { Header } from '@/components/Header'
 import { firestore } from '@/services'
 import { ListItem } from '@/types'
 import { useAsyncAction, useAsyncHandler } from '@/utils'
+import plus from '@/assets/icons/plus.svg'
 
 import {
   addDoc,
@@ -14,6 +17,11 @@ import {
 } from 'firebase/firestore'
 import { useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { Checkbox } from '@/components/Checkbox'
+
+import trash from '@/assets/icons/trash.svg'
+import edit from '@/assets/icons/edit.svg'
+import { IconButton } from '@/components/IconButton'
 
 function Item({ data, listId }: { data: ListItem; listId: string }) {
   const path = `/lists/${listId}/items/${data.id}`
@@ -32,28 +40,25 @@ function Item({ data, listId }: { data: ListItem; listId: string }) {
 
   const [handleDelete] = useAsyncHandler(
     useCallback(async () => {
+      const confirmed = confirm('Excluir item?')
+      if (!confirmed) return
       await deleteDoc(doc(firestore, path))
     }, [path])
   )
 
   return (
-    <div>
-      <div style={{ display: 'flex' }}>
-        <input
-          id={`item-${data.id}`}
-          type="checkbox"
-          checked={data.checked}
+    <div className="flex-row">
+      <div className="flex-1">
+        <Checkbox
+          label={data.name}
           onChange={handleToggleChecked}
+          checked={data.checked}
         />
-        <label
-          htmlFor={`item-${data.id}`}
-          style={{ display: 'block', flex: 1 }}
-        >
-          {data.name}
-        </label>
       </div>
-      <button onClick={handleUpdate}>Editar</button>
-      <button onClick={handleDelete}>Excluir</button>
+      <div className="flex-row gap-1">
+        <IconButton icon={edit} onClick={handleUpdate} />
+        <IconButton icon={trash} onClick={handleDelete} />
+      </div>
     </div>
   )
 }
@@ -63,7 +68,7 @@ function Component() {
   const params = useParams<{ listId: string }>()
   const path = `/lists/${params.listId as string}/items`
 
-  const [handleAddItem, { loading: creating }] = useAsyncAction(async () => {
+  const [handleAddItem] = useAsyncAction(async () => {
     const name = prompt('Digite o nome do item')
     if (!name) return
     const data: Omit<ListItem, 'id'> = {
@@ -81,10 +86,11 @@ function Component() {
 
   return (
     <div>
-      <hr />
-      <button onClick={handleAddItem} disabled={creating}>
-        Adicionar item
-      </button>
+      <Header>Lista</Header>
+
+      <Button icon={plus} onClick={handleAddItem}>
+        Novo item
+      </Button>
       <Collection<ListItem>
         path={path}
         queryConstraints={[orderBy('createdAt', 'asc')]}

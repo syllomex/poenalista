@@ -12,6 +12,7 @@ import { useCallback, useMemo } from 'react'
 
 import plus from '@/assets/icons/plus.svg'
 import { Header } from '@/components/Header'
+import { Button } from '@/components/Button'
 
 function Component() {
   const { user } = useAuth(true)
@@ -56,13 +57,9 @@ function Component() {
 
                 {!!data && (
                   <div>
-                    <button
-                      onClick={handleCreateList}
-                      className="flex items-center py-4"
-                    >
-                      <img src={plus} />
-                      <span className="pl-4 md:text-xl">nova lista</span>
-                    </button>
+                    <Button icon={plus} onClick={handleCreateList}>
+                      Nova lista
+                    </Button>
 
                     <Collection<List>
                       path={path}
