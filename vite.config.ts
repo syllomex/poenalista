@@ -16,7 +16,7 @@ export default defineConfig({
       },
       manifest: {
         name: 'Põe na Lista',
-        short_name: 'PoeNaLista',
+        short_name: 'Põe na Lista',
         description:
           'Crie suas listas para qualquer coisa e compartilhe com quem quiser!',
         icons: [
