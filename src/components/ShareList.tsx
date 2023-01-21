@@ -91,7 +91,6 @@ function Component() {
   const { user } = useAuth(true)
 
   const path = useMemo(() => '/share', [])
-  console.log(path)
 
   return (
     <Document<Share>
