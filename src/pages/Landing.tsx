@@ -1,7 +1,6 @@
 import { useAuth } from '@/providers/auth'
+import { Loading } from '@/components/Loading'
 import logo from '@/assets/logo.svg'
-
-import { DotLoader } from 'react-spinners'
 
 export function Landing() {
   const { login, loading } = useAuth()
@@ -10,7 +9,7 @@ export function Landing() {
     <div className="flex-1 items-center justify-around">
       <img src={logo} className="w-[50%] max-w-sm" />
       {loading ? (
-        <DotLoader color="#ffffff" />
+        <Loading />
       ) : (
         <>
           <button
