@@ -13,6 +13,7 @@ module.exports = {
         'in-secondary': {
           400: '#FFFFFF',
         },
+        danger: '#FF4949',
       },
     },
     fontFamily: {

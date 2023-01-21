@@ -1,3 +1,6 @@
+import itemMark from '@/assets/icons/item-mark.svg'
+import plus from '@/assets/icons/plus.svg'
+import trash from '@/assets/icons/trash.svg'
 import { Authorized } from '@/components/Authorized'
 import { useAuth } from '@/providers/auth'
 import { firestore } from '@/services'
@@ -6,6 +9,7 @@ import { useAsyncAction, useAsyncHandler } from '@/utils'
 import { collection, doc, setDoc, updateDoc } from 'firebase/firestore'
 import { useCallback, useMemo } from 'react'
 import { Document } from './Document'
+import { IconButton } from './IconButton'
 
 function SharingWithEmail({
   email,
@@ -15,15 +19,15 @@ function SharingWithEmail({
   onDelete: (email: string) => Promise<void>
 }) {
   return (
-    <div>
-      {email} -{' '}
-      <button
+    <div className="flex-row py-2">
+      <img src={itemMark} className="md:w-6 md:h-6" />
+      <p className="flex-1 ml-2">{email}</p>
+      <IconButton
+        icon={trash}
         onClick={() => {
           void onDelete(email)
         }}
-      >
-        Excluir
-      </button>
+      />
     </div>
   )
 }
@@ -54,6 +58,8 @@ function List({ data, path }: { data: Share; path: string }) {
   const [handleDelete] = useAsyncHandler(
     useCallback(
       async (email: string) => {
+        const confirmed = confirm('Excluir e-mail?')
+        if (!confirmed) return
         const updated = [...data.with]
         updated.splice(updated.indexOf(email), 1)
         await updateDoc(doc(firestore, `${path}/${user.uid}`), {
@@ -65,12 +71,18 @@ function List({ data, path }: { data: Share; path: string }) {
   )
 
   return (
-    <div>
-      <div>Compartilhando com</div>
-      <button onClick={handleShare}>Adicionar</button>
-      {data.with.map(email => (
-        <SharingWithEmail key={email} email={email} onDelete={handleDelete} />
-      ))}
+    <div className="mt-8">
+      <div className="flex-row">
+        <p className="text-primary-400 flex-1">Compartilhando listas com</p>
+        <IconButton onClick={handleShare} icon={plus} />
+      </div>
+
+      <div>
+        {data.with.length === 0 && <p className="text-zinc-400">Ninguem</p>}
+        {data.with.map(email => (
+          <SharingWithEmail key={email} email={email} onDelete={handleDelete} />
+        ))}
+      </div>
     </div>
   )
 }

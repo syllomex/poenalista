@@ -2,12 +2,13 @@ import {
   createBrowserRouter,
   Outlet,
   redirect,
-  RouterProvider,
+  RouterProvider
 } from 'react-router-dom'
 
+import { Items } from '@/pages/Items'
 import { Landing } from '@/pages/Landing'
 import { Lists } from '@/pages/Lists'
-import { Items } from '@/pages/Items'
+import { Profile } from '@/pages/Profile'
 import { AuthProvider } from '@/providers/auth'
 
 function isAuthorized() {
@@ -49,6 +50,11 @@ const router = createBrowserRouter([
       {
         path: '/lists/:listId',
         element: <Items />,
+        loader: authLoader,
+      },
+      {
+        path: '/profile',
+        element: <Profile />,
         loader: authLoader,
       },
     ],
