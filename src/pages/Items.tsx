@@ -96,7 +96,7 @@ function Component() {
         queryConstraints={[orderBy('createdAt', 'asc')]}
       >
         {data => (
-          <div>
+          <div className="overflow-y-auto flex-1 block">
             {data?.map(item => (
               <Item
                 key={item.id}

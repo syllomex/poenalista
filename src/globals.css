@@ -6,4 +6,18 @@
   div {
     @apply flex flex-col overflow-hidden;
   }
+
+  p,
+  span {
+    @apply text-base sm:text-lg md:text-xl;
+  }
+
+  *::-webkit-scrollbar {
+    display: none;
+  }
+
+  * {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }

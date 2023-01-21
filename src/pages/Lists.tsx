@@ -72,7 +72,7 @@ function Component() {
                       ]}
                     >
                       {data => (
-                        <div>
+                        <div className="overflow-y-auto block flex-1">
                           {data?.map(list => (
                             <ListItem key={list.id} data={list} />
                           ))}
