@@ -1,3 +1,4 @@
+import plus from '@/assets/icons/plus.svg'
 import { Authorized } from '@/components/Authorized'
 import { Button } from '@/components/Button'
 import { Collection } from '@/components/Collection'
@@ -5,8 +6,8 @@ import { Header } from '@/components/Header'
 import { firestore } from '@/services'
 import { ListItem } from '@/types'
 import { useAsyncAction, useAsyncHandler } from '@/utils'
-import plus from '@/assets/icons/plus.svg'
 
+import { Checkbox } from '@/components/Checkbox'
 import {
   addDoc,
   collection,
@@ -17,10 +18,9 @@ import {
 } from 'firebase/firestore'
 import { useCallback } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Checkbox } from '@/components/Checkbox'
 
-import trash from '@/assets/icons/trash.svg'
 import edit from '@/assets/icons/edit.svg'
+import trash from '@/assets/icons/trash.svg'
 import { IconButton } from '@/components/IconButton'
 
 function Item({ data, listId }: { data: ListItem; listId: string }) {
@@ -86,7 +86,7 @@ function Component() {
 
   return (
     <div>
-      <Header>Lista</Header>
+      <Header canGoBack>Lista</Header>
 
       <Button icon={plus} onClick={handleAddItem}>
         Novo item
