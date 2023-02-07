@@ -7,13 +7,13 @@ import {
 } from 'firebase/firestore'
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBD1owgxCcGiZI9iPM_D6rVtOsc3oOV-3A',
-  authDomain: 'poenalista.firebaseapp.com',
-  projectId: 'poenalista',
-  storageBucket: 'poenalista.appspot.com',
-  messagingSenderId: '612605054540',
-  appId: '1:612605054540:web:62cd883fd027a830e82ee9',
-  measurementId: 'G-C2257HDVWE',
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 }
 
 export const firebase = initializeApp(firebaseConfig)
